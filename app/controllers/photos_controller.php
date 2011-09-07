@@ -36,9 +36,29 @@ class PhotosController extends AppController {
 			$this->set('total', $photos['total']);
 			$this->set('per_page', $this->per_page);
 
+			$this->__log($q, $photos['total']);
+
 		}
 
 		$this->set('q', $q);
+
+	}
+
+	function __log($q, $total) {
+
+		$record = array (
+			'Search' => array (
+				'keywords' => $q,
+				'results' => $total,
+			)
+		);
+
+		$this->Photo->Search->saveAll($record);
+	}
+
+	function history() {
+
+		$this->data = $this->Photo->Search->lastSearches();
 
 	}
 

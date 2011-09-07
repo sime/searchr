@@ -91,6 +91,7 @@ class FlickrHelper extends AppHelper {
 
 	}
 
+	// Bottleneck on large result sets.
 	function pagination($per_page, $total) {
 		$pages = ceil($total / $per_page);
 

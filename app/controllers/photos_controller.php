@@ -9,13 +9,22 @@ class PhotosController extends AppController {
 
 	var $per_page = 5;
 
+	var $page = 1;
+
 	function search() {
 
 		$q = (isset($this->params['url']['q'])) ? $this->params['url']['q'] : false;
+		$page = (isset($this->params['url']['page'])) ? $this->params['url']['page'] : $this->page;
 
 
 		if ($q) {
-			$photos = $this->flickr->photos_search(array('text' => $q, 'per_page' => $this->per_page));
+			$photos = $this->flickr->photos_search(
+				array(
+					'text' => $q,
+					'per_page' => $this->per_page,
+					'page' => $page,
+				)
+			);
 
 			foreach ($photos['photo'] as $result) {
 				$info = $this->flickr->photos_getInfo($result['id']);
@@ -25,6 +34,7 @@ class PhotosController extends AppController {
 			}
 
 			$this->set('total', $photos['total']);
+			$this->set('per_page', $this->per_page);
 
 		}
 

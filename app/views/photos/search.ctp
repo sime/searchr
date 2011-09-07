@@ -13,5 +13,7 @@ if ($q) {
 	echo $this->Html->tag('p', $summary);
 
 	echo $this->Flickr->listThumbs($this->data);
+
+	echo $this->Flickr->pagination($per_page, $total);
 }
 

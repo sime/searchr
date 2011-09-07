@@ -74,16 +74,44 @@ class FlickrHelper extends AppHelper {
 
 		$image = $this->__extractImage($photo, $size);
 
-		return $image[0]['sizes']['source'];
-
+		return ($image) ? $image[0]['sizes']['source'] : false;
 	}
 
 	function __extractImage($photo, $size = null) {
 		if (!in_array($size, $this->sizes)) {
 			return false;
 		}
-		return Set::extract('/sizes[label='. $size .']', $photo);
+		$image = Set::extract('/sizes[label='. $size .']', $photo);
 
+		if (!$image && $size == 'Large') { // Hrm so Large doesn't always exist.
+			$image = $this->__extractImage($photo, 'Medium 640');
+		}
+
+		return $image;
+
+	}
+
+	function pagination($per_page, $total) {
+		$pages = ceil($total / $per_page);
+
+		$q = $this->params['url']['q'];
+		$page = (isset($this->params['url']['page'])) ? $this->params['url']['page'] : 1;
+
+		for ($i=1; $i<=$pages; $i++) {
+			$link = $this->Html->link($i, array(
+					'controller' => 'photos',
+					'action' => 'search',
+					'?' => array(
+						'q' => $q,
+						'page' => $i,
+					),
+				)
+			);
+			if ($i == $page) {
+				$link = '[ ' . $link . ' ]';
+			}
+			echo $link . ', ';
+		}
 	}
 
 }

@@ -9,6 +9,6 @@ if ($q) {
 	$summary = 'Total results for query <strong>' . $q . '</strong>: ' . $total;
 	echo $this->Html->tag('p', $summary);
 
-	echo $this->Flickr->photoLinks($links);
+	echo $this->Flickr->photoLinks($this->data);
 }
 

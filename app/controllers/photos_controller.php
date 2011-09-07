@@ -5,23 +5,24 @@ class PhotosController extends AppController {
 
 	var $helpers = array('Html', 'Form', 'Flickr');
 
+	var $components = array ('Flickr');
+
 	function search() {
 
 		$q = (isset($this->params['url']['q'])) ? $this->params['url']['q'] : false;
 
+
 		if ($q) {
-			App::import('Vendor', 'phpflickr/phpflickr');
-			$flickr = new phpFlickr('f0f23b5acee8e3575bb2dba792af82aa');
+			$photos = $this->flickr->photos_search(array('text' => $q, 'per_page' => 1));
 
-			$search = $flickr->photos_search(array('text' => $q, 'per_page' => 5));
-
-			foreach ($search['photo'] as $result) {
-				$info = $flickr->photos_getInfo($result['id']);
-				$links[] = $info['photo']['urls']['url'][0]['_content'];
+			foreach ($photos['photo'] as $result) {
+				$info = $this->flickr->photos_getInfo($result['id']);
+				$sizes = $this->flickr->photos_getSizes($result['id']);
+				$info['sizes'] = $sizes;
+				$this->data[] = $info;
 			}
 
-			$this->set('total', $search['total']);
-			$this->set('links', $links);
+			$this->set('total', $photos['total']);
 
 		}
 
